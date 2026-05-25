@@ -46,7 +46,11 @@ if uploaded_file is not None:
         st.info("Analyzing for: Conciseness and Key Facts.")
 
     st.write("### Text Preview:")
-    st.markdown(text[:1000] + "...")
+   # تجميع النص في فقرات وعرضه بالكامل
+    paragraphs = [p for p in text.split('\n') if p.strip()]
+    full_text = "\n\n".join(paragraphs)
+    st.write("### 📝 Full Document Content:")
+    st.markdown(full_text)
 # تحليل الكلمات المفتاحية
     from collections import Counter
     
