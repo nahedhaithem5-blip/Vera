@@ -47,3 +47,13 @@ if uploaded_file is not None:
 
     st.write("### Text Preview:")
     st.markdown(text[:1000] + "...")
+# تحليل الكلمات المفتاحية
+    from collections import Counter
+    
+    st.write("### 🔑 Key Topics (Top 5 words):")
+    # بنشيل الكلمات القصيرة جداً عشان التحليل يكون أدق
+    filtered_words = [word for word in words if len(word) > 4]
+    most_common = Counter(filtered_words).most_common(5)
+    
+    for word, count in most_common:
+        st.write(f"- **{word}**: appeared {count} times")
