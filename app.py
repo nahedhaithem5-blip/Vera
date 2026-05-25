@@ -45,4 +45,5 @@ if uploaded_file is not None:
     
     st.write("---")
     st.write("### 📝 Text Preview:")
-    st.markdown(text[:1000]) # عرض أول 1000 حرف
+    clean_text = text.replace('\n', ' ')
+    st.markdown(clean_text[:1000] + "...")
