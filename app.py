@@ -1,30 +1,33 @@
 import streamlit as st
+import PyPDF2
+from docx import Document
 
-# Page configuration for a professional look
-st.set_page_config(page_title="Vera - AI Academic Assistant", page_icon="🔍")
+st.title("🔍 Vera: AI Academic Assistant")
 
-st.title("🔍 Vera: Your Intelligent Academic Assistant")
-st.markdown("""
-### Welcome! 
-**Vera** is designed to be your partner in verifying the integrity and quality of your academic research using AI-driven analysis.
-""")
+def read_pdf(file):
+    reader = PyPDF2.PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text()
+    return text
 
-# Sidebar for professional settings
-st.sidebar.header("🛠️ Analysis Settings")
-mode = st.sidebar.selectbox("Choose Analysis Mode:", ["Plagiarism Detection", "Style Quality Analysis"])
+def read_docx(file):
+    doc = Document(file)
+    text = ""
+    for para in doc.paragraphs:
+        text += para.text
+    return text
 
-# File uploader with a sleek interface
-uploaded_file = st.file_uploader("📂 Upload your research paper here", type=['pdf', 'docx', 'txt'])
+uploaded_file = st.file_uploader("📂 Upload your research paper", type=['pdf', 'docx'])
 
 if uploaded_file is not None:
-    # Adding a sleek spinner
-    with st.spinner('Processing your document...'):
-        # Placeholder for AI logic
-        st.success("✅ File uploaded successfully!")
-        st.info(f"File Name: {uploaded_file.name} | Size: {uploaded_file.size} bytes")
-        
-        if st.button("🚀 Start Analysis"):
-            st.warning("⚠️ Activating Vera engine to scan for patterns...")
-            st.progress(50)  # Progress bar to show system activity
-            st.write("---")
-            st.write("Result: This section will be connected to your AI model soon.")
+    # تحديد نوع الملف وقراءته
+    if uploaded_file.type == "application/pdf":
+        text = read_pdf(uploaded_file)
+    else:
+        text = read_docx(uploaded_file)
+    
+    st.success("✅ File processed!")
+    st.write("---")
+    st.write("### Preview of extracted text:")
+    st.text(text[:500] + "...") # هيعرض أول 500 حرف بس عشان الشاشة متزحمش
