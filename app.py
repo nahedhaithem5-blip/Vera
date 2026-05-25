@@ -3,11 +3,20 @@ import PyPDF2
 from docx import Document
 from collections import Counter
 
-# Set up page configuration with professional branding
-st.set_page_config(page_title="Vera - Smart Analyzer", page_icon="🔍")
-st.title("🔍 Vera: Universal AI Analyzer")
+# Page Layout configuration
+st.set_page_config(page_title="Vera | Intelligent Analysis", page_icon="🔍", layout="wide")
 
-# Unified function for text extraction from various formats
+# Custom UI Styling (CSS)
+st.markdown("""
+    <style>
+    .main {background-color: #f8f9fa;}
+    .stMetric {background-color: #ffffff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+    </style>
+    """, unsafe_allow_html=True)
+
+st.title("🔍 Vera: Intelligent Analysis Suite")
+st.subheader("Your professional assistant for document insights")
+
 def extract_text(file):
     if file.type == "application/pdf":
         reader = PyPDF2.PdfReader(file)
@@ -16,44 +25,45 @@ def extract_text(file):
         doc = Document(file)
         return " ".join([p.text for p in doc.paragraphs])
 
-# Sidebar: Configuration and Settings
-st.sidebar.header("⚙️ Configuration")
-analysis_type = st.sidebar.selectbox("Select Document Type:", 
-                                     ["Academic Research", "Creative Writing", "General Report"])
-language = st.sidebar.radio("Select Analysis Language:", ["English", "Arabic"])
+# Sidebar Setup
+st.sidebar.header("Control Panel")
+analysis_type = st.sidebar.selectbox("Document Context:", ["Academic Research", "Creative Writing", "General Report"])
+language = st.sidebar.radio("Analysis Language:", ["English", "Arabic"])
+uploaded_file = st.file_uploader("Upload your document", type=['pdf', 'docx'])
 
-uploaded_file = st.file_uploader("Upload document (PDF/Docx)", type=['pdf', 'docx'])
-
-if uploaded_file is not None:
+if uploaded_file:
     text = extract_text(uploaded_file)
     words = text.split()
     
-    # Statistical Dashboard
-    col1, col2 = st.columns(2)
-    col1.metric("Word Count", len(words))
-    col2.metric("Vocabulary Richness", f"{len(set(words))/len(words):.2%}")
+    # Advanced Metrics Calculation
+    avg_word_len = sum(len(w) for w in words) / len(words)
+    unique_ratio = len(set(words)) / len(words)
+    
+    # Professional Dashboard
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Total Words", len(words))
+    col2.metric("Unique Density", f"{unique_ratio:.1%}")
+    col3.metric("Avg. Word Length", f"{avg_word_len:.1f} chars")
     
     st.write("---")
     
-    # AI Engine: Dynamic Analysis based on document type and language
-    st.subheader(f"💡 {'Insights' if language == 'English' else 'تحليلات ذكية'}")
-    
-    if analysis_type == "Academic Research":
-        st.info("Academic Analysis: Evaluating formal tone and structural coherence.")
-    elif analysis_type == "Creative Writing":
-        st.info("Creative Analysis: Evaluating descriptive language and emotional flow.")
-    else:
-        st.info("Report Analysis: Evaluating conciseness and factual density.")
+    # Detailed Professional Analysis (The "Deep" part)
+    with st.expander("📊 View Detailed Professional Analysis"):
+        st.write(f"### {'Deep Analysis Report' if language == 'English' else 'تقرير التحليل المفصل'}")
+        if analysis_type == "Academic Research":
+            st.write("Academic focus: Evaluates formal syntax, logical progression, and terminology.")
+        elif analysis_type == "Creative Writing":
+            st.write("Creative focus: Evaluates narrative flow, descriptive depth, and pacing.")
+        else:
+            st.write("Report focus: Evaluates factual density and information clarity.")
+            
+    # Key Topics with Progress Bars
+    st.write(f"### 🔑 {'Top Themes' if language == 'English' else 'أهم الموضوعات'}")
+    filtered = [w for w in words if len(w) > 5]
+    for word, count in Counter(filtered).most_common(5):
+        st.write(f"**{word}**")
+        st.progress(min(count/20, 1.0)) # Progress bar visualization
 
-    # Text Display: Full content normalized
-    clean_text = " ".join(text.split())
-    st.write(f"### 📝 {'Full Document Content' if language == 'English' else 'محتوى الملف بالكامل'}")
-    st.markdown(clean_text)
-
-    # Keyword Extraction: Statistical analysis of document themes
-    st.write(f"### 🔑 {'Key Topics (Top 5 words)' if language == 'English' else 'أهم الكلمات المفتاحية'}")
-    filtered_words = [word for word in words if len(word) > 4]
-    most_common = Counter(filtered_words).most_common(5)
-    
-    for word, count in most_common:
-        st.write(f"- **{word}**: {count} {'times' if language == 'English' else 'مرة'}")
+    # Document Preview
+    with st.expander("📝 View Full Document"):
+        st.markdown(" ".join(text.split()))
