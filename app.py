@@ -47,10 +47,10 @@ if uploaded_file is not None:
 
     st.write("### Text Preview:")
    # تجميع النص في فقرات وعرضه بالكامل
-    paragraphs = [p for p in text.split('\n') if p.strip()]
-    full_text = "\n\n".join(paragraphs)
+  # تنظيف شامل: دمج كل النص في كتلة واحدة وإزالة التقطيع
+    clean_text = " ".join(text.split())
     st.write("### 📝 Full Document Content:")
-    st.markdown(full_text)
+    st.markdown(clean_text)
 # تحليل الكلمات المفتاحية
     from collections import Counter
     
